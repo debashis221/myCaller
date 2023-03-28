@@ -1,0 +1,1 @@
+export { StorageFactory } from './StorageFactory'
