@@ -99,7 +99,7 @@ export default StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     marginLeft: 20,
-    color: 'gray'
+    color: 'gray',
   },
   bottomSheetSearch: {
     height: 40,

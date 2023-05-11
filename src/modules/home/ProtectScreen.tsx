@@ -33,9 +33,6 @@ export class ProtectScreen extends Component<Props, MyState> {
       value: 12345678,
     };
   }
-  onKeyPress(event) {
-    this.setState({value: event.target.innerText});
-  }
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -52,9 +49,7 @@ export class ProtectScreen extends Component<Props, MyState> {
           </View>
           <View style={styles.numberContainer}>
             <View style={styles.number}>
-              <Text style={styles.numberText} onPress={this.onKeyPress}>
-                1
-              </Text>
+              <Text style={styles.numberText}>1</Text>
             </View>
             <View style={styles.number}>
               <Text style={styles.numberText}>2</Text>

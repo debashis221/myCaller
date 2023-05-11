@@ -1,4 +1,7 @@
 {
   "name": "myCaller",
-  "displayName": "myCaller"
+  "displayName": "myCaller",
+  "android": {
+    "versionCode": 2
+  }
 }

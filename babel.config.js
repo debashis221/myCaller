@@ -6,8 +6,8 @@ module.exports = {
   plugins: [
     ['@babel/plugin-syntax-decorators', {legacy: true}],
     ['@babel/plugin-proposal-decorators', {version: 'legacy'}],
-    ['@babel/plugin-transform-flow-strip-types', { loose: true }],
+    ['@babel/plugin-transform-flow-strip-types', {loose: true}],
     ['@babel/plugin-proposal-class-properties', {loose: true}],
-    'react-native-reanimated/plugin'
+    'react-native-reanimated/plugin',
   ],
 };
