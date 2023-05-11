@@ -7,6 +7,7 @@ import {
   TextInput,
   Keyboard,
   LogBox,
+  PermissionsAndroid,
   Image,
   Dimensions,
   Platform,
@@ -21,7 +22,7 @@ import ContactStyle from '../../stylesheet/ContactStyle';
 import SearchStyle from '../../stylesheet/SearchStyle';
 import rootStore from '../../stores/RootStore';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import OctIcon from 'react-native-vector-icons/Octicons';
+import OctIcons from 'react-native-vector-icons/Octicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ScrollView, FlatList} from 'react-native-gesture-handler';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -29,7 +30,7 @@ import BottomSheet from 'react-native-simple-bottom-sheet';
 import {Overlay} from 'react-native-elements';
 import {RestClient, Utils} from '../../services';
 import {AlertsModel} from '../../components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 interface Props {
   navigation: any;
@@ -40,6 +41,7 @@ type MyState = {
   isOpen: boolean;
   searchValue: string;
   listData: any;
+  FCMToken:String;
 };
 
 const windowHeight = Dimensions.get('window').height;
@@ -53,6 +55,9 @@ export class SearchScreen extends Component<Props, MyState> {
   presenter = new HomeScreenPresenter(this.props.navigation);
 
   constructor(props: Props) {
+
+  
+
     super(props);
 
     this.state = {
@@ -60,8 +65,72 @@ export class SearchScreen extends Component<Props, MyState> {
       isOpen: false,
       searchValue: '',
       listData: [],
+      FCMToken:'',
     };
+    if(this.requestUserPermission()){
+      messaging()
+      .getToken()
+      .then( async(fcmToken)=>{
+         console.log('FCM TOKEN ..........login ui .....', fcmToken);
+         this.setState({FCMToken:fcmToken});
+
+         let payload = {
+          os: Platform.OS,
+          deviceId: rootStore._loginStore['uuid'],
+          deviceName: rootStore._loginStore['deviceName'],
+          versionCode: '1',
+          code: 'react',
+          mobile: rootStore._loginStore.mobileNumber,
+          countryCode: rootStore._loginStore.countryCodeValue.code,
+          fcmToken: this.state.FCMToken
+        };
+        console.log('pay load .....',payload);
+        
+
+        let encryptedData = await Utils.mapWrapper(payload);
+        // console.log('Login data ' + encryptedData);
+
+        RestClient.connectServer(
+          rootStore._loginStore.urlData.login,
+          encryptedData,
+        )
+          .then(result => {
+    
+            
+          })
+          .catch(err => {
+           
+       
+          });
+    
+      
+      });
+    }
+    else{
+      console.log('Not Authorization status :',authStatus);
+      
+    }
+  
+  
+  
   }
+
+   
+
+
+    async  requestUserPermission  () {
+      const authStatus = await messaging().requestPermission();
+      console.log('Authorization status false:', authStatus);
+  
+      return(  
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    
+      );
+    };
+
+
+
   renderHeader = () => {
     return (
       <View style={SearchStyle.headerContainer}>
@@ -94,7 +163,7 @@ export class SearchScreen extends Component<Props, MyState> {
     return (
       <View style={SearchStyle.searchBoxContainer}>
         <View style={SearchStyle.searchBoxLayout}>
-          <OctIcon
+          <OctIcons
             name="search"
             size={20}
             color="gray"

@@ -1,18 +1,7 @@
 import 'react-native-gesture-handler';
-import {StatusBar} from 'expo-status-bar';
-
-import React, {Component, useEffect} from 'react';
-import {
-  View,
-  Image,
-  Text,
-  ImageBackground,
-  ActivityIndicator,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import React from 'react';
+import {Component} from 'react';
+import {View, Text, Dimensions, Platform, LogBox} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -43,14 +32,16 @@ import HomeStyle from './src/stylesheet/HomeStyle';
 import rootStore from './src/stores/RootStore';
 import {Utils, RestClient} from './src/services';
 import Iconicons from 'react-native-vector-icons/Ionicons';
-import OctIcon from 'react-native-vector-icons/Octicons';
+import Octicons from 'react-native-vector-icons/Octicons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {AlertsModel} from './src/components';
 import {getUniqueId, getDeviceName} from 'react-native-device-info';
 import MainStack from './Component/Navigation/StackNavigation';
 
-const windowWidth = Dimensions.get('window').width;
+LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreAllLogs();
+// const windowWidth = Dimensions.get('window').width;
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -108,7 +99,7 @@ function ProtectStackNavigator() {
     <Provider homeStore={rootStore._homeStore}>
       <Stack.Navigator>
         <Stack.Screen
-          name="Protect"
+          name="Keypad"
           component={ProtectScreen}
           options={{headerShown: false}}
         />
@@ -163,7 +154,7 @@ function HomeTabs() {
                   HomeStyle.tabBarIcon,
                   {backgroundColor: focused ? '#ECE6EE' : ''},
                 ]}>
-                <OctIcon
+                <Iconicons
                   name="search"
                   size={20}
                   color={focused ? 'mediumpurple' : '#C2C2C2'}
@@ -180,7 +171,7 @@ function HomeTabs() {
           }}
         />
         <Tab.Screen
-          name="Protect"
+          name="Keypad"
           component={ProtectStackNavigator}
           options={{
             tabBarIcon: ({focused}) => (
@@ -190,7 +181,7 @@ function HomeTabs() {
                   {backgroundColor: focused ? '#ECE6EE' : ''},
                 ]}>
                 <Iconicons
-                  name="shield-checkmark-outline"
+                  name="keypad"
                   size={20}
                   color={focused ? 'mediumpurple' : '#C2C2C2'}
                 />
@@ -199,7 +190,7 @@ function HomeTabs() {
                     HomeStyle.tabBarText,
                     {color: focused ? 'mediumpurple' : '#C2C2C2'},
                   ]}>
-                  Protect
+                  Keypad
                 </Text>
               </View>
             ),
@@ -215,7 +206,7 @@ function HomeTabs() {
                   HomeStyle.tabBarIcon,
                   {backgroundColor: focused ? '#ECE6EE' : ''},
                 ]}>
-                <OctIcon
+                <Octicons
                   name="three-bars"
                   size={20}
                   color={focused ? 'mediumpurple' : '#C2C2C2'}
@@ -252,7 +243,7 @@ function HomeTabs() {
                     HomeStyle.tabBarText,
                     {color: focused ? 'mediumpurple' : '#C2C2C2'},
                   ]}>
-             Chat
+                  Chat
                 </Text>
               </View>
             ),
@@ -268,7 +259,7 @@ function LoginStack() {
   return (
     <Provider loginStore={rootStore._loginStore}>
       <Stack.Navigator initialRouteName="Login">
-        {/* <Stack.Screen
+        <Stack.Screen
           name="Login"
           component={LoginScreen}
           options={{headerShown: false}}
@@ -287,7 +278,7 @@ function LoginStack() {
           name="CreateProfile"
           component={CreateProfileScreen}
           options={{headerShown: false}}
-        /> */}
+        />
         <Stack.Screen
           name="Home"
           component={HomeTabs}
@@ -361,70 +352,67 @@ export class App extends Component<Props, MyState> {
     getUniqueId().then(uniqueId => {
       debugger;
       getDeviceName().then(deviceName => {
-         let obj = {
-           os: Platform.OS,
-           deviceId: uniqueId,
-           deviceName: deviceName,
-           versionCode: '1',
-           code: 'react',
-         };
-         rootStore._loginStore['uuid'] = uniqueId;
-         rootStore._loginStore['deviceName'] = deviceName;
-         console.log('imei ' + uniqueId);
-         console.log('keys Data before api : ', rootStore._loginStore.keyData);
-         StorageFactory.createAll([Contacts])
-           .then(() => {
-             AsyncStorage.getItem('keyData').then(data => {
-               if (data === null) {
-                 RestClient.getKeysData(obj)
-                   .then(async data => {
-                     debugger;
-                     let str: string = data as string;
-                     let json = JSON.parse(Utils.decodeData(str));
-                     if (json.resCode === '200') {
-                       debugger;
-                       console.log('keys Data response', json);
+        let obj = {
+          os: Platform.OS,
+          deviceId: uniqueId,
+          deviceName: deviceName,
+          versionCode: '1',
+          code: 'react',
+        };
+        rootStore._loginStore['uuid'] = uniqueId;
+        rootStore._loginStore['deviceName'] = deviceName;
+        console.log('imei ' + uniqueId);
+        console.log('keys Data before api : ', rootStore._loginStore.keyData);
+        StorageFactory.createAll([Contacts])
+          .then(() => {
+            AsyncStorage.getItem('keyData').then(data => {
+              if (data === null) {
+                RestClient.getKeysData(obj)
+                  .then(async data => {
+                    debugger;
+                    let str: string = data as string;
+                    let json = JSON.parse(Utils.decodeData(str));
+                    if (json.resCode === '200') {
+                      debugger;
+                      console.log('keys Data response', json);
 
-                       rootStore._loginStore.keyData = json;
-                       rootStore._loginStore.countryCodeValues = json.data;
-                       rootStore._loginStore.countryCodeValue =
-                         json.data.length > 0 && json.data[0];
-                       rootStore._loginStore.urlData = json.urlData;
-                       rootStore._homeStore.moreData = json.moreData;
-                       rootStore._loginStore['deviceName'] = deviceName;
+                      rootStore._loginStore.keyData = json;
+                      rootStore._loginStore.countryCodeValues = json.data;
+                      rootStore._loginStore.countryCodeValue =
+                        json.data.length > 0 && json.data[0];
+                      rootStore._loginStore.urlData = json.urlData;
+                      rootStore._homeStore.moreData = json.moreData;
+                      rootStore._loginStore['deviceName'] = deviceName;
 
-                       await AsyncStorage.setItem(
-                         'loginData',
-                         JSON.stringify({isLogin: true, deviceName}),
-                       );
-                       await AsyncStorage.setItem(
-                         'keyData',
-                         JSON.stringify(json),
-                       );
-                       await AsyncStorage.setItem('deviceID', uniqueId);
+                      await AsyncStorage.setItem(
+                        'loginData',
+                        JSON.stringify({isLogin: true, deviceName}),
+                      );
+                      await AsyncStorage.setItem(
+                        'keyData',
+                        JSON.stringify(json),
+                      );
+                      await AsyncStorage.setItem('deviceID', uniqueId);
 
-                       this.getData(json);
-                     } else {
-                       AlertsModel.showAlert(
-                         `${json.resCode} : ${json.resText}`,
-                       );
-                     }
-                   })
-                   .catch(err => {
-                     AlertsModel.showAlert(`${json.resCode} : ${json.resText}`);
-                   });
-               } else {
-                 this.getData(JSON.parse(data));
-               }
-             });
-           })
-           .catch(err => {
-             AlertsModel.showAlert(
-               `Database malfunction Please Contact Admin!`,
-             );
-           });
-      })
-     
+                      this.getData(json);
+                    } else {
+                      AlertsModel.showAlert(
+                        `${json.resCode} : ${json.resText}`,
+                      );
+                    }
+                  })
+                  .catch(err => {
+                    AlertsModel.showAlert(`${json.resCode} : ${json.resText}`);
+                  });
+              } else {
+                this.getData(JSON.parse(data));
+              }
+            });
+          })
+          .catch(err => {
+            AlertsModel.showAlert(`Database malfunction Please Contact Admin!`);
+          });
+      });
     });
 
     // if (!rootStore._loginStore.countryCodeValues) {
@@ -516,3 +504,4 @@ global.Promise.Create = resolver => {
 };
 
 export default App;
+

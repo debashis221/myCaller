@@ -2,9 +2,9 @@
 import {NavigationScreenProp} from 'react-navigation';
 
 export default class BasePresenter {
-  navigation: NavigationScreenProp<{},{}>;
+  navigation: NavigationScreenProp<{}, {}>;
 
-  constructor(navigation: NavigationScreenProp<{},{}>) {
+  constructor(navigation: NavigationScreenProp<{}, {}>) {
     this.navigation = navigation;
   }
 }

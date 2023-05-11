@@ -25,6 +25,8 @@ import Snackbar from 'react-native-snackbar';
 import {AlertsModel} from '../../components';
 import {Overlay} from 'react-native-elements';
 
+
+
 interface Props {
   navigation: any;
 }
@@ -35,6 +37,8 @@ type MyState = {
   countryCodeValue: any;
   searchString: String;
   searchCodeValues: any;
+  FCMToken:String;
+
 };
 
 @inject('loginStore')
@@ -51,10 +55,24 @@ export class LoginScreen extends Component<Props, MyState> {
       countryCodeValue: rootStore._loginStore.countryCodeValue,
       searchString: '',
       searchCodeValues: [],
+      FCMToken:''
     };
+
+    
+
   }
 
+ 
+
+
+  
+  
   componentDidMount() {
+
+
+   
+
+   
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }
 
@@ -279,10 +297,13 @@ export class LoginScreen extends Component<Props, MyState> {
                   code: 'react',
                   mobile: rootStore._loginStore.mobileNumber,
                   countryCode: rootStore._loginStore.countryCodeValue.code,
+                 
                 };
+          
+                
 
                 let encryptedData = await Utils.mapWrapper(payload);
-                console.log('Login data ' + encryptedData);
+                // console.log('Login data ' + encryptedData);
 
                 RestClient.connectServer(
                   rootStore._loginStore.urlData.login,
@@ -319,7 +340,7 @@ export class LoginScreen extends Component<Props, MyState> {
                     : LoginStyle.disabledButton
                 }>
                 <Text style={{color: 'snow', fontSize: 15, fontWeight: '600'}}>
-                  Continue
+                  Continue 
                 </Text>
               </View>
             </TouchableOpacity>

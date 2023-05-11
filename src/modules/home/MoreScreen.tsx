@@ -109,6 +109,9 @@ export class MoreScreen extends Component<Props, MyState> {
       firstname = rootStore._homeStore.profileData.name.split(' ')[0];
       lastname = rootStore._homeStore.profileData.name.split(' ').pop();
     }
+
+    console.log(firstname,'dodjdjd fires name   ');
+    
     return (
       <View
         style={{

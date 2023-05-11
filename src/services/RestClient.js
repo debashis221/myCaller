@@ -23,7 +23,7 @@ class RestClient {
   };
 
   connectServer = async (url: any, data: any) => {
-    console.log('url :----------------------- ', url);
+    console.log('url :-----------restclient.js------------ ', url);
     return await fetch(url, {
       method: 'POST',
       body: data,
