@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import { Component } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   TextInput,
   Keyboard,
-  LogBox,
   Platform,
   Image,
   Dimensions,
@@ -17,15 +16,13 @@ import HomeScreenPresenter from '../HomeScreenPresenter';
 import LoginStyle from '../../../stylesheet/LoginStyle';
 import ContactStyle from '../../../stylesheet/ContactStyle';
 import rootStore from '../../../stores/RootStore';
-import Icon from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {ScrollView, FlatList} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import {RestClient, Utils} from '../../../services';
 import {AlertsModel} from '../../../components';
 import Snackbar from 'react-native-snackbar';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {RadioButton} from '../../../components';
-import {NavigationStackRouterConfig} from 'react-navigation';
 import DatePicker from 'react-native-modern-datepicker';
 import Modal from 'react-native-modal';
 import {Overlay} from 'react-native-elements';
@@ -46,9 +43,6 @@ type MyState = {
   imageType: string;
   isModalVisible: boolean;
 };
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 @inject('homeStore')
 @observer

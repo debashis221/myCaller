@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import HomeScreenPresenter from './HomeScreenPresenter';
@@ -86,9 +87,13 @@ export class ProtectScreen extends Component<Props, MyState> {
             </View>
           </View>
           <View style={styles.actionsContainer}>
-            <View style={styles.callButton}>
+            <TouchableOpacity
+              style={styles.callButton}
+              onPress={() => {
+                this.props.navigation.navigate('CallScreen');
+              }}>
               <Iconicons name="call" size={30} color={'#FFFFFF'} />
-            </View>
+            </TouchableOpacity>
             <View style={styles.callButton}>
               <Iconicons name="videocam" size={30} color={'#FFFFFF'} />
             </View>

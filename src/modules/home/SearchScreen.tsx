@@ -3,11 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-  Keyboard,
-  LogBox,
-  PermissionsAndroid,
   Image,
   Dimensions,
   Platform,
@@ -16,16 +11,13 @@ import {
 import {inject, observer} from 'mobx-react';
 import HomeScreenPresenter from './HomeScreenPresenter';
 import {ContactsConnector} from '../../database/Connectors';
-import {Contacts} from '../../database/models';
-import LoginStyle from '../../stylesheet/LoginStyle';
 import ContactStyle from '../../stylesheet/ContactStyle';
 import SearchStyle from '../../stylesheet/SearchStyle';
 import rootStore from '../../stores/RootStore';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import OctIcons from 'react-native-vector-icons/Octicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {ScrollView, FlatList} from 'react-native-gesture-handler';
-import RBSheet from 'react-native-raw-bottom-sheet';
+import {ScrollView} from 'react-native-gesture-handler';
 import BottomSheet from 'react-native-simple-bottom-sheet';
 import {Overlay} from 'react-native-elements';
 import {RestClient, Utils} from '../../services';
@@ -41,7 +33,7 @@ type MyState = {
   isOpen: boolean;
   searchValue: string;
   listData: any;
-  FCMToken:String;
+  FCMToken: String;
 };
 
 const windowHeight = Dimensions.get('window').height;
@@ -55,9 +47,6 @@ export class SearchScreen extends Component<Props, MyState> {
   presenter = new HomeScreenPresenter(this.props.navigation);
 
   constructor(props: Props) {
-
-  
-
     super(props);
 
     this.state = {
@@ -65,71 +54,51 @@ export class SearchScreen extends Component<Props, MyState> {
       isOpen: false,
       searchValue: '',
       listData: [],
-      FCMToken:'',
+      FCMToken: '',
     };
-    if(this.requestUserPermission()){
+    if (this.requestUserPermission()) {
       messaging()
-      .getToken()
-      .then( async(fcmToken)=>{
-         console.log('FCM TOKEN ..........login ui .....', fcmToken);
-         this.setState({FCMToken:fcmToken});
+        .getToken()
+        .then(async fcmToken => {
+          console.log('FCM TOKEN ..........login ui .....', fcmToken);
+          this.setState({FCMToken: fcmToken});
 
-         let payload = {
-          os: Platform.OS,
-          deviceId: rootStore._loginStore['uuid'],
-          deviceName: rootStore._loginStore['deviceName'],
-          versionCode: '1',
-          code: 'react',
-          mobile: rootStore._loginStore.mobileNumber,
-          countryCode: rootStore._loginStore.countryCodeValue.code,
-          fcmToken: this.state.FCMToken
-        };
-        console.log('pay load .....',payload);
-        
+          let payload = {
+            os: Platform.OS,
+            deviceId: rootStore._loginStore['uuid'],
+            deviceName: rootStore._loginStore['deviceName'],
+            versionCode: '1',
+            code: 'react',
+            mobile: rootStore._loginStore.mobileNumber,
+            countryCode: rootStore._loginStore.countryCodeValue.code,
+            fcmToken: this.state.FCMToken,
+          };
+          console.log('pay load .....', payload);
 
-        let encryptedData = await Utils.mapWrapper(payload);
-        // console.log('Login data ' + encryptedData);
+          let encryptedData = await Utils.mapWrapper(payload);
+          // console.log('Login data ' + encryptedData);
 
-        RestClient.connectServer(
-          rootStore._loginStore.urlData.login,
-          encryptedData,
-        )
-          .then(result => {
-    
-            
-          })
-          .catch(err => {
-           
-       
-          });
-    
-      
-      });
+          RestClient.connectServer(
+            rootStore._loginStore.urlData.login,
+            encryptedData,
+          )
+            .then(result => {})
+            .catch(err => {});
+        });
+    } else {
+      console.log('Not Authorization status :', authStatus);
     }
-    else{
-      console.log('Not Authorization status :',authStatus);
-      
-    }
-  
-  
-  
   }
 
-   
+  async requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    console.log('Authorization status false:', authStatus);
 
-
-    async  requestUserPermission  () {
-      const authStatus = await messaging().requestPermission();
-      console.log('Authorization status false:', authStatus);
-  
-      return(  
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL
-    
-      );
-    };
-
-
+    return (
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    );
+  }
 
   renderHeader = () => {
     return (

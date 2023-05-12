@@ -5,9 +5,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
-  TextInput,
-  Keyboard,
-  LogBox,
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
@@ -24,7 +21,6 @@ import Utils from '../../services/Utils';
 import {ContactsConnector} from '../../database/Connectors';
 import {Overlay} from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
-import {StackActions} from '@react-navigation/native';
 
 interface Props {
   navigation: any;
@@ -33,8 +29,6 @@ interface Props {
 type MyState = {
   isLoading: boolean;
 };
-
-const windowWidth = Dimensions.get('window').width;
 
 @inject('homeStore')
 @observer
@@ -110,8 +104,8 @@ export class MoreScreen extends Component<Props, MyState> {
       lastname = rootStore._homeStore.profileData.name.split(' ').pop();
     }
 
-    console.log(firstname,'dodjdjd fires name   ');
-    
+    console.log(firstname, 'dodjdjd fires name   ');
+
     return (
       <View
         style={{
@@ -168,11 +162,11 @@ export class MoreScreen extends Component<Props, MyState> {
     this.setState({isLoading: true});
     let contactsConnector = new ContactsConnector();
     let filter = `key CONTAINS '${rootStore._loginStore.mobileNumber}' AND number != null `;
-    debugger
+    debugger;
     contactsConnector
       .deleteContacts(filter)
       .then(() => {
-        debugger
+        debugger;
         AsyncStorage.setItem('loginData', JSON.stringify({isLogin: true}))
           .then(() => {
             this.setState({isLoading: false});

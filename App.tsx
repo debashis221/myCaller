@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-import {Component} from 'react';
-import {View, Text, Dimensions, Platform, LogBox} from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, Platform, LogBox} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -19,6 +18,7 @@ import {
   PremiumScreen,
   ProtectScreen,
   SearchScreen,
+  CallScreen,
 } from './src/modules/home';
 import {
   WhoViewedMyProfileScreen,
@@ -70,6 +70,7 @@ function MoreStackNavigator() {
           component={EditProfileScreen}
           options={{headerShown: false}}
         />
+
         <Stack.Screen
           name="Logout"
           component={LoginStack}
@@ -80,19 +81,19 @@ function MoreStackNavigator() {
   );
 }
 
-function PremiumStackNavigator() {
-  return (
-    <Provider homeStore={rootStore._homeStore}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Premium"
-          component={PremiumScreen}
-          options={{headerShown: false}}
-        />
-      </Stack.Navigator>
-    </Provider>
-  );
-}
+// function PremiumStackNavigator() {
+//   return (
+//     <Provider homeStore={rootStore._homeStore}>
+//       <Stack.Navigator>
+//         <Stack.Screen
+//           name="Premium"
+//           component={PremiumScreen}
+//           options={{headerShown: false}}
+//         />
+//       </Stack.Navigator>
+//     </Provider>
+//   );
+// }
 
 function ProtectStackNavigator() {
   return (
@@ -101,6 +102,11 @@ function ProtectStackNavigator() {
         <Stack.Screen
           name="Keypad"
           component={ProtectScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CallScreen"
+          component={CallScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
@@ -289,39 +295,39 @@ function LoginStack() {
   );
 }
 
-function HomeStack() {
-  return (
-    <Provider loginStore={rootStore._loginStore}>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Otp"
-          component={OtpScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Notification"
-          component={NotificationScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="CreateProfile"
-          component={CreateProfileScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeTabs}
-          options={{headerShown: false}}
-        />
-      </Stack.Navigator>
-    </Provider>
-  );
-}
+// function HomeStack() {
+//   return (
+//     <Provider loginStore={rootStore._loginStore}>
+//       <Stack.Navigator initialRouteName="Home">
+//         <Stack.Screen
+//           name="Login"
+//           component={LoginScreen}
+//           options={{headerShown: false}}
+//         />
+//         <Stack.Screen
+//           name="Otp"
+//           component={OtpScreen}
+//           options={{headerShown: false}}
+//         />
+//         <Stack.Screen
+//           name="Notification"
+//           component={NotificationScreen}
+//           options={{headerShown: false}}
+//         />
+//         <Stack.Screen
+//           name="CreateProfile"
+//           component={CreateProfileScreen}
+//           options={{headerShown: false}}
+//         />
+//         <Stack.Screen
+//           name="Home"
+//           component={HomeTabs}
+//           options={{headerShown: false}}
+//         />
+//       </Stack.Navigator>
+//     </Provider>
+//   );
+// }
 
 type MyState = {
   isLogin: boolean;
@@ -504,4 +510,3 @@ global.Promise.Create = resolver => {
 };
 
 export default App;
-
